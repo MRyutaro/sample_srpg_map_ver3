@@ -4,6 +4,7 @@ function App() {
     return (
         <div
             style={{
+                height: "100vh",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -13,6 +14,8 @@ function App() {
                 style={{
                     width: "1000px",
                     height: "500px",
+                    // width: "100%",
+                    // height: "100vh",
                     border: "1px solid black",
                 }}
             >

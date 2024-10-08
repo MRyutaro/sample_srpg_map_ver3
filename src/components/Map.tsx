@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { transform } from "typescript";
 
 // 定数定義
 const TILE_SIDE_LENGTH = 100; // タイルのサイズ
@@ -27,9 +26,7 @@ function Tile({ x, y, tileHalfWidth, tileHalfHeight, children }: TileProps) {
                 height: TILE_SIDE_LENGTH,
                 left: `${MAP_OFFSET_X + x * tileHalfWidth - y * tileHalfWidth}px`,
                 top: `${
-                    MAP_OFFSET_Y +
-                    y * (tileHalfWidth * Math.cos((ROTATE_X * Math.PI) / 180)) +
-                    x * (tileHalfWidth * Math.cos((ROTATE_X * Math.PI) / 180))
+                    MAP_OFFSET_Y + y * (tileHalfWidth * Math.cos((ROTATE_X * Math.PI) / 180)) + x * (tileHalfWidth * Math.cos((ROTATE_X * Math.PI) / 180))
                 }px`,
                 transform: `rotateX(${ROTATE_X}deg) rotateZ(45deg)`,
                 border: "1px solid black",
@@ -55,20 +52,33 @@ export function Map() {
     }, []);
 
     useEffect(() => {
-        // ウィンドウサイズが変更されたときにタイルの数を再計算
+        const mapElement = document.getElementById("map");
+
+        if (!mapElement) return;
+
         const handleResize = () => {
+            const mapWidth = mapElement.clientWidth;
+            const mapHeight = mapElement.clientHeight;
+
             setTilesNum({
-                x: Math.ceil(window.innerWidth / tileHalfWidth),
-                y: Math.ceil(window.innerHeight / tileHalfHeight),
+                x: Math.ceil(mapWidth / (tileHalfWidth * 2)),
+                y: Math.ceil(mapHeight / (tileHalfHeight * 2)),
             });
         };
 
-        if (tileHalfWidth > 0 && tileHalfHeight > 0) {
-            handleResize();
-        }
+        // 初期計算
+        handleResize();
 
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
+        // ResizeObserverの設定
+        const resizeObserver = new ResizeObserver(() => {
+            handleResize();
+        });
+
+        resizeObserver.observe(mapElement);
+
+        return () => {
+            if (mapElement) resizeObserver.unobserve(mapElement);
+        };
     }, [tileHalfWidth, tileHalfHeight]);
 
     return (
