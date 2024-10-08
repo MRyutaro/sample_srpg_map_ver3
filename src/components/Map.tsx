@@ -15,6 +15,24 @@ interface TileProps {
     children?: React.ReactNode;
 }
 
+interface TileContents {
+    [key: string]: {
+        children: React.ReactNode;
+    };
+}
+
+const tileContents: TileContents = {
+    "0,0": {
+        children: <div>🌲</div>,
+    },
+    "1,0": {
+        children: <div>🌲</div>,
+    },
+    "0,1": {
+        children: <div>🌲</div>,
+    },
+};
+
 function Tile({ x, y, tileHalfWidth, tileHalfHeight, children }: TileProps) {
     return (
         <div
@@ -60,10 +78,13 @@ export function Map() {
             const mapWidth = mapElement.clientWidth;
             const mapHeight = mapElement.clientHeight;
 
-            setTilesNum({
-                x: Math.ceil(mapWidth / (tileHalfWidth * 2)),
-                y: Math.ceil(mapHeight / (tileHalfHeight * 2)),
-            });
+            if (tileHalfWidth > 0 && tileHalfHeight > 0) {
+                // ここでチェックを追加
+                setTilesNum({
+                    x: Math.ceil(mapWidth / (tileHalfWidth * 2)),
+                    y: Math.ceil(mapHeight / (tileHalfHeight * 2)),
+                });
+            }
         };
 
         // 初期計算
@@ -106,10 +127,13 @@ export function Map() {
             {Array.from({ length: 2 * tilesNum.x + 2 }, (_, x) => x - 1).map((x) => (
                 <Fragment key={x}>
                     {Array.from({ length: 2 * tilesNum.y + 3 }, (_, y) => y - tilesNum.y - 1).map((y) => {
+                        const key = `${x},${y}`;
+                        const tileContent = tileContents[key];
+
                         if (-x - 1 <= y && y <= x + 1 && x - 2 * tilesNum.x <= y && y <= -x + 2 * tilesNum.x + 1) {
                             return (
                                 <Tile key={`${x},${y}`} x={x} y={y} tileHalfWidth={tileHalfWidth} tileHalfHeight={tileHalfHeight}>
-                                    ({x}, {y})
+                                    {tileContent ? tileContent.children : null}
                                 </Tile>
                             );
                         }
