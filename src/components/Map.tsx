@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 // 定数定義
 const TILE_SIDE_LENGTH = 100; // タイルのサイズ
@@ -88,7 +88,6 @@ export function Map() {
                 position: "relative",
                 width: "100%",
                 height: "100%",
-                overflow: "hidden",
             }}
         >
             <div
@@ -103,27 +102,21 @@ export function Map() {
             >
                 {tilesNum.x} x {tilesNum.y}
             </div>
-            <Tile x={0} y={0} tileHalfWidth={tileHalfWidth} tileHalfHeight={tileHalfHeight}>
-                (0, 0)
-            </Tile>
-            <Tile x={1} y={-1} tileHalfWidth={tileHalfWidth} tileHalfHeight={tileHalfHeight}>
-                (1, -1)
-            </Tile>
-            <Tile x={2} y={-2} tileHalfWidth={tileHalfWidth} tileHalfHeight={tileHalfHeight}>
-                (2, -2)
-            </Tile>
-            <Tile x={3} y={-3} tileHalfWidth={tileHalfWidth} tileHalfHeight={tileHalfHeight}>
-                (3, -3)
-            </Tile>
-            <Tile x={4} y={-4} tileHalfWidth={tileHalfWidth} tileHalfHeight={tileHalfHeight}>
-                (4, -4)
-            </Tile>
-            <Tile x={5} y={-5} tileHalfWidth={tileHalfWidth} tileHalfHeight={tileHalfHeight}>
-                (5, -5)
-            </Tile>
-            <Tile x={6} y={-6} tileHalfWidth={tileHalfWidth} tileHalfHeight={tileHalfHeight}>
-                (6, -6)
-            </Tile>
+            {/* 指定された範囲のタイルを描画 */}
+            {Array.from({ length: 2 * tilesNum.x + 2 }, (_, x) => x - 1).map((x) => (
+                <Fragment key={x}>
+                    {Array.from({ length: 2 * tilesNum.y + 3 }, (_, y) => y - tilesNum.y - 1).map((y) => {
+                        if (-x - 1 <= y && y <= x + 1 && x - 2 * tilesNum.x <= y && y <= -x + 2 * tilesNum.x + 1) {
+                            return (
+                                <Tile key={`${x},${y}`} x={x} y={y} tileHalfWidth={tileHalfWidth} tileHalfHeight={tileHalfHeight}>
+                                    ({x}, {y})
+                                </Tile>
+                            );
+                        }
+                        return null;
+                    })}
+                </Fragment>
+            ))}
         </div>
     );
 }
