@@ -11,8 +11,8 @@ function App() {
         >
             <div
                 style={{
-                    width: "50vw",
-                    height: "50vh",
+                    width: "1000px",
+                    height: "500px",
                     border: "1px solid black",
                 }}
             >

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { transform } from "typescript";
 
 // 定数定義
 const TILE_SIDE_LENGTH = 100; // タイルのサイズ
@@ -18,6 +19,8 @@ interface TileProps {
 function Tile({ x, y, tileHalfWidth, tileHalfHeight, children }: TileProps) {
     return (
         <div
+            id={`tile(${x},${y})`}
+            className="tile"
             style={{
                 position: "absolute",
                 width: TILE_SIDE_LENGTH,
@@ -70,6 +73,7 @@ export function Map() {
 
     return (
         <div
+            id="map"
             style={{
                 position: "relative",
                 width: "100%",
@@ -78,6 +82,7 @@ export function Map() {
             }}
         >
             <div
+                className="panel"
                 style={{
                     position: "absolute",
                     top: 0,
